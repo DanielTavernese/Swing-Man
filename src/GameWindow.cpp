@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+
 #include "GameWindow.h"
 #include "SpriteLoader.h"
 #include "Graphics.h"
@@ -43,14 +44,15 @@ GameWindow::GameWindow() {
 	if(TTF_Init()==-1) {
 			printf("TTF_Init: %s\n", TTF_GetError());
 			exit(-1);
-		}
+	}
 
-		font = TTF_OpenFont("./res/AGENCYB.TTF",64);
-		if(font == NULL)
-		{
-		   fprintf(stderr,"font open failure %s\n",SDL_GetError());
-		   exit(-1);
-		}
+	font = TTF_OpenFont("./res/AGENCYB.TTF",64);
+	if(font == NULL)
+	{
+	   fprintf(stderr,"font open failure %s\n",SDL_GetError());
+	   exit(-1);
+	}
+
 
 	gameLoop();
 }
@@ -204,7 +206,7 @@ void GameWindow::gameLoop() {
 
 
 
-				if(event.key.keysym.sym == SDLK_a) {
+				if(event.key.keysym.sym == SDLK_SPACE) {
 					if(state == GameState::END) {
 						restart(graphics);
 					}
@@ -493,7 +495,7 @@ void GameWindow::gameDraw(Graphics &graphics) {
 		for (Obstacle *obs : obstacles) {
 			if(!obs->isDestroyed()) {
 				if(state != GameState::START && state != GameState::CONTROLS) {
-			obs->gameDraw(graphics);
+					obs->gameDraw(graphics);
 				}
 			}
 		}
@@ -588,7 +590,7 @@ void GameWindow::gameDraw(Graphics &graphics) {
 
 		if(endNewGameText == nullptr) {
 			SDL_Color color = {255,0,0};
-			endNewGameText = new GraphicsText(graphics.getRenderer(), 40, "res/AGENCYB.TTF", "Press A to Play Again!", color);
+			endNewGameText = new GraphicsText(graphics.getRenderer(), 40, "res/AGENCYB.TTF", "Press Space to Play Again!", color);
 		}
 
 		endScoreGameText->draw(283, 240);

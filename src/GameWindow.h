@@ -114,6 +114,7 @@ private:
 	int heightIndex = -1;
 
 	int gamescore = 0;
+	int gameHighscore;
 
 	Graphics graphics;
 
