@@ -15,7 +15,6 @@
 #include "GeyserObstacle.h"
 #include "Obstacle.h"
 #include "BatObstacle.h"
-#include "HighScore.h"
 #include <cmath>
 #include <vector>
 
@@ -54,8 +53,7 @@ GameWindow::GameWindow() {
 	   exit(-1);
 	}
 
-	//gamehighscore = highscore->getHighScore();
-	gamehighscore = 100;
+
 	gameLoop();
 }
 
@@ -65,6 +63,7 @@ void GameWindow::gameLoop() {
 	this->soundMixer = SoundMixer();
 	SDL_Event event;
 	SpriteLoader spriteLoader(graphics);
+
 
 	obstacleManager = nullptr;
 	start_flag = false;
@@ -85,7 +84,6 @@ void GameWindow::gameLoop() {
 	titleGameText = nullptr;
 	endNewGameText = nullptr;
 	endScoreGameText = nullptr;
-	endHighScoreGameText = nullptr;
 	controlsGameText = nullptr;
 	score = nullptr;
 
@@ -240,7 +238,6 @@ void GameWindow::gameLoop() {
 					delete(endGameText);
 					delete(endNewGameText);
 					delete(endScoreGameText);
-					delete(endHighScoreGameText);
 					delete(controlsGameText);
 					delete(titleGameText);
 					delete(score);
@@ -306,7 +303,6 @@ void GameWindow::restart(Graphics& graphics) {
 	endGameText = nullptr;
 	endNewGameText = nullptr;
 	endScoreGameText = nullptr;
-	endHighScoreGameText = nullptr;
 	startSettingsText = nullptr;
 	controlsGameText = nullptr;
 	titleGameText = nullptr;
@@ -364,9 +360,6 @@ void GameWindow::gameUpdate(const float &elapsedTime) {
 	}
 	case GameState::END:
 	{
-		if(gamescore > gamehighscore){
-			gamehighscore = gamescore;
-		}
 		player->gameUpdate(elapsedTime);
 		break;
 	}
@@ -590,21 +583,8 @@ void GameWindow::gameDraw(Graphics &graphics) {
 			strcpy(output_str, "Score: ");
 			strcat(output_str, score_str);
 
+
 			endScoreGameText = new GraphicsText(graphics.getRenderer(), 60, "res/AGENCYB.TTF", output_str, color);
-
-		}
-
-		if(endHighScoreGameText == nullptr) {
-
-			SDL_Color color = {255,215,0};
-
-			char output_str[40];
-			char score_str[25];
-			itoa(gamehighscore, score_str, 10);
-			strcpy(output_str, "High Score: ");
-			strcat(output_str, score_str);
-
-			endHighScoreGameText = new GraphicsText(graphics.getRenderer(), 60, "res/AGENCYB.TTF", output_str, color);
 
 		}
 
@@ -613,9 +593,8 @@ void GameWindow::gameDraw(Graphics &graphics) {
 			endNewGameText = new GraphicsText(graphics.getRenderer(), 40, "res/AGENCYB.TTF", "Press Space to Play Again!", color);
 		}
 
-		endScoreGameText->draw(283, 220);
-		endHighScoreGameText->draw(283, 300);
-		endNewGameText->draw(240, 380);
+		endScoreGameText->draw(283, 240);
+		endNewGameText->draw(240, 330);
 		endGameText->draw(260, 120);
 
 		break;
