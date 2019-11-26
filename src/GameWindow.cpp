@@ -256,18 +256,23 @@ void GameWindow::gameLoop() {
 						}
 					}
 				}
-				if(event.key.keysym.sym == SDLK_s) {
+
+				if (event.key.keysym.sym == SDLK_ESCAPE) {
 					if(state == GameState::CONTROLS) {
 						state = GameState::START;
 						soundMixer->playSound(this, "button");
 					}
-				}
-
-
-				if (event.key.keysym.sym == SDLK_m) {
 					if(state == GameState::IN_GAME) {
 						pause_position_index = 0;
 						state = GameState::PAUSE;
+						soundMixer->playSound(this, "button");
+					}
+					else if(state == GameState::PAUSE) {
+						state = GameState::IN_GAME;
+						soundMixer->playSound(this, "button");
+					}
+					if(state == GameState::SETTINGS){
+						state = GameState::START;
 						soundMixer->playSound(this, "button");
 					}
 				}
@@ -694,11 +699,11 @@ void GameWindow::gameDraw(Graphics &graphics) {
 
 		}
 		if(this->controlsPauseText == nullptr) {
-			controlsPauseText = new GraphicsText(graphics.getRenderer(), 30, "res/AGENCYB.TTF", "To Open Up Pause Menu Press (M)", {255, 255, 255, 255});
+			controlsPauseText = new GraphicsText(graphics.getRenderer(), 30, "res/AGENCYB.TTF", "To Open Up Pause Menu Press ESC", {255, 255, 255, 255});
 		}
 
 		if(this->controlsBackText == nullptr) {
-			controlsBackText = new GraphicsText(graphics.getRenderer(), 30, "res/AGENCYB.TTF", "Press (S) To Go Back To Start Screen", {255, 0, 0});
+			controlsBackText = new GraphicsText(graphics.getRenderer(), 30, "res/AGENCYB.TTF", "Press ESC To Go Back To Start Screen", {255, 0, 0});
 		}
 
 		controlsSwingText->draw(120, 200);
