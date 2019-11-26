@@ -17,6 +17,7 @@
 #include "BatObstacle.h"
 #include <cmath>
 #include <vector>
+#include <algorithm>
 
 //h
 using namespace std;
@@ -56,7 +57,6 @@ GameWindow::GameWindow() {
 	   exit(-1);
 	}
 
-
 	gameLoop();
 }
 
@@ -91,6 +91,7 @@ void GameWindow::gameLoop() {
 	titleGameText = nullptr;
 	endNewGameText = nullptr;
 	endScoreGameText = nullptr;
+	endHighScoreGameText = nullptr;
 	controlsGameText = nullptr;
 	score = nullptr;
 
@@ -310,6 +311,7 @@ void GameWindow::gameLoop() {
 					delete(endGameText);
 					delete(endNewGameText);
 					delete(endScoreGameText);
+					delete(endHighScoreGameText);
 					delete(controlsGameText);
 					delete(titleGameText);
 					delete(score);
@@ -386,6 +388,7 @@ void GameWindow::restart(Graphics& graphics) {
 	soundSettingsText = nullptr;
 	difficultySettingsText = nullptr;
 	endScoreGameText = nullptr;
+	endHighScoreGameText = nullptr;
 	startSettingsText = nullptr;
 	controlsGameText = nullptr;
 	titleGameText = nullptr;
@@ -447,6 +450,9 @@ void GameWindow::gameUpdate(const float &elapsedTime) {
 	}
 	case GameState::END:
 	{
+		if(gamescore > gameHighscore){
+			gameHighscore = gamescore;
+		}
 		player->gameUpdate(elapsedTime);
 		break;
 	}
@@ -583,13 +589,8 @@ void GameWindow::gameDraw(Graphics &graphics) {
 
 		for (Obstacle *obs : obstacles) {
 			if(!obs->isDestroyed()) {
-<<<<<<< HEAD
 				if(state != GameState::START && state != GameState::CONTROLS) {
 					obs->gameDraw(graphics);
-=======
-				if(state != GameState::START && state != GameState::CONTROLS && state != GameState::SETTINGS) {
-			obs->gameDraw(graphics);
->>>>>>> master
 				}
 			}
 		}
@@ -724,15 +725,27 @@ void GameWindow::gameDraw(Graphics &graphics) {
 			endScoreGameText = new GraphicsText(graphics.getRenderer(), 60, "res/AGENCYB.TTF", output_str, color);
 
 		}
+		if(endHighScoreGameText == nullptr) {
+			SDL_Color color = {255,215,0};
+
+			char output_str[40];
+			char score_str[25];
+			itoa(max(gamescore,gameHighscore), score_str, 10);
+			strcpy(output_str, "High Score: ");
+			strcat(output_str, score_str);
+
+			endHighScoreGameText = new GraphicsText(graphics.getRenderer(), 60, "res/AGENCYB.TTF", output_str, color);
+		}
 
 		if(endNewGameText == nullptr) {
 			SDL_Color color = {255,0,0};
 			endNewGameText = new GraphicsText(graphics.getRenderer(), 40, "res/AGENCYB.TTF", "Press Space to Play Again!", color);
 		}
 
-		endScoreGameText->draw(283, 240);
-		endNewGameText->draw(240, 330);
-		endGameText->draw(260, 120);
+		endScoreGameText->draw((GAME_WIDTH/2)-(endScoreGameText->getW()/2), 220);
+		endHighScoreGameText->draw((GAME_WIDTH/2)-(endHighScoreGameText->getW()/2), 300);
+		endNewGameText->draw((GAME_WIDTH/2)-(endNewGameText->getW()/2), 380);
+		endGameText->draw((GAME_WIDTH/2)-(endGameText->getW()/2), 120);
 
 		break;
 	}

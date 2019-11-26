@@ -119,7 +119,7 @@ private:
 	int heightIndex = -1;
 
 	int gamescore = 0;
-	int gameHighscore;
+	int gameHighscore = 0;
 
 	Graphics graphics;
 
@@ -156,6 +156,8 @@ private:
 	GraphicsText* endNewGameText;
 
 	GraphicsText* endScoreGameText;
+
+	GraphicsText* endHighScoreGameText;
 
 	GraphicsText* endGameText;
 
