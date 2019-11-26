@@ -10,6 +10,7 @@
 #include "Obstacle.h"
 #include "ObstacleManager.h"
 #include "GraphicsText.h"
+#include "HighScore.h"
 #include <set>
 
 using namespace std;
@@ -140,6 +141,8 @@ private:
 	bool difficulty;
 
 	GameState state;
+
+	HighScore* highscore;
 
 	vector<Entity*> lavaBlocks;
 

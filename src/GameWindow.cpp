@@ -57,6 +57,7 @@ GameWindow::GameWindow() {
 	   exit(-1);
 	}
 
+	highscore = new HighScore();
 	gameLoop();
 }
 
@@ -293,6 +294,7 @@ void GameWindow::gameLoop() {
 			} else if (event.type == SDL_QUIT) {
 				cout << "AB" << endl;
 
+					highscore->writeHighScore();
 					TTF_Quit();
 					delete(controlsBackText);
 					delete(controlsSwingText);
@@ -315,6 +317,7 @@ void GameWindow::gameLoop() {
 					delete(controlsGameText);
 					delete(titleGameText);
 					delete(score);
+					delete(highscore);
 					player = nullptr;
 					obstacleManager = nullptr;
 					//cout << "A" << endl;
@@ -404,6 +407,9 @@ void GameWindow::restart(Graphics& graphics) {
 }
 
 void GameWindow::endGame() {
+	if(gamescore > highscore->getHighScore()){
+		highscore->setHighScore(gamescore);
+	}
 	state = GameState::END;
 }
 
@@ -450,9 +456,6 @@ void GameWindow::gameUpdate(const float &elapsedTime) {
 	}
 	case GameState::END:
 	{
-		if(gamescore > gameHighscore){
-			gameHighscore = gamescore;
-		}
 		player->gameUpdate(elapsedTime);
 		break;
 	}
@@ -730,7 +733,8 @@ void GameWindow::gameDraw(Graphics &graphics) {
 
 			char output_str[40];
 			char score_str[25];
-			itoa(max(gamescore,gameHighscore), score_str, 10);
+
+			itoa(highscore->getHighScore(), score_str, 10);
 			strcpy(output_str, "High Score: ");
 			strcat(output_str, score_str);
 
