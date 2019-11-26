@@ -10,6 +10,7 @@
 #include "Obstacle.h"
 #include "ObstacleManager.h"
 #include "GraphicsText.h"
+#include "HighScore.h"
 #include <set>
 
 using namespace std;
@@ -114,13 +115,15 @@ private:
 	int heightIndex = -1;
 
 	int gamescore = 0;
-	int gameHighscore;
+	int gamehighscore = 0;
 
 	Graphics graphics;
 
 	SoundMixer soundMixer;
 
 	Player* player;
+
+	HighScore* highscore;
 
 	bool finished;
 
@@ -149,6 +152,8 @@ private:
 	GraphicsText* endNewGameText;
 
 	GraphicsText* endScoreGameText;
+
+	GraphicsText* endHighScoreGameText;
 
 	GraphicsText* endGameText;
 
