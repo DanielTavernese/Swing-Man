@@ -20,10 +20,11 @@ class Rope;
 class ObstacleManager;
 class Obstacle;
 class GraphicsText;
+class SoundMixer;
 
 
 enum GameState {
-	START, CONTROLS, IN_GAME, END, PAUSE
+	START, CONTROLS, IN_GAME, END, PAUSE, SETTINGS
 };
 
 /*
@@ -87,6 +88,8 @@ public:
 
 	int getScore() const;
 
+	bool getDifficulty() const;
+
 	/*
 	 * @return top blocks
 	 */
@@ -104,6 +107,8 @@ public:
 
 	GameState getGameState() const;
 
+	bool isSoundMuted() const;
+
 
 private:
 
@@ -118,7 +123,7 @@ private:
 
 	Graphics graphics;
 
-	SoundMixer soundMixer;
+	SoundMixer* soundMixer;
 
 	Player* player;
 
@@ -128,9 +133,11 @@ private:
 
 	TTF_Font *font;
 
-	bool start_flag;
+	bool muteMusic;
 
-	bool menu_flag;
+	bool muteSound;
+
+	bool difficulty;
 
 	GameState state;
 
@@ -167,5 +174,14 @@ private:
 	GraphicsText* startSettingsText;
 
 	GraphicsText* score;
+
+	GraphicsText* musicSettingsText;
+
+	GraphicsText* soundSettingsText;
+
+	GraphicsText* difficultySettingsText;
+
+	GraphicsText* startScreenSettingsText;
+
 
 };

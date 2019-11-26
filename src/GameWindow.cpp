@@ -33,6 +33,9 @@ int menu_position_index = 0;
 int pause_menu_dot_position_y[] = {200, 270};
 int pause_position_index = 0;
 
+int settings_menu_dot_position_y[] = {150, 220, 290, 360};
+int settings_position_index = 0;
+
 int main(int argv, char **args) {
 	GameWindow game;
 	return 0;
@@ -60,16 +63,16 @@ GameWindow::GameWindow() {
 void GameWindow::gameLoop() {
 	srand(time(NULL));
 	Graphics graphics;
-	this->soundMixer = SoundMixer();
+	this->soundMixer = new SoundMixer();
 	SDL_Event event;
 	SpriteLoader spriteLoader(graphics);
 
 
 	obstacleManager = nullptr;
-	start_flag = false;
 	finished = false;
-	menu_flag = false;
-
+	muteMusic = false;
+	muteSound = false;
+	difficulty = true;
 
 	restarting = false;
 
@@ -78,6 +81,10 @@ void GameWindow::gameLoop() {
 	controlsPauseText = nullptr;
 	startGameText = nullptr;
 	pauseContinueText = nullptr;
+	musicSettingsText = nullptr;
+	startScreenSettingsText = nullptr;
+	soundSettingsText = nullptr;
+	difficultySettingsText = nullptr;
 	startSettingsText = nullptr;
 	pauseNewGameText = nullptr;
 	endGameText = nullptr;
@@ -139,6 +146,9 @@ void GameWindow::gameLoop() {
 					if(state == GameState::PAUSE) {
 						pause_position_index = (pause_position_index + 1) % 2;
 					}
+					if(state == GameState::SETTINGS) {
+						settings_position_index = (settings_position_index + 1) % 4;
+					}
 				}
 
 				if(event.key.keysym.sym == SDLK_RETURN) {
@@ -147,30 +157,76 @@ void GameWindow::gameLoop() {
 						case 0:
 							//start
 							restart(graphics);
+							soundMixer->playSound(this, "button");
 							break;
 						case 1:
 							//controls
-							cout << "here" << endl;
 							state = GameState::CONTROLS;
+							menu_position_index = 0;
+							soundMixer->playSound(this, "button");
 							break;
 						case 2:
 							//settings
+							state = GameState::SETTINGS;
+							menu_position_index = 0;
+							soundMixer->playSound(this, "button");
 							break;
 						}
+
+						continue;
 					}
 						if(state == GameState::PAUSE) {
 							switch(pause_position_index % 2) {
 							case 0:
 								//start
 								state = GameState::IN_GAME;
+								soundMixer->playSound(this, "button");
 								break;
 							case 1:
 								//controls
 								state = GameState::START;
+								soundMixer->playSound(this, "button");
 								menu_position_index = 0;
 								break;
 							}
+							continue;
 					}
+
+						if(state == GameState::SETTINGS) {
+							switch(settings_position_index % 4) {
+							case 0:
+								//start
+								soundMixer->muteMusic(muteMusic ? false : true);
+								muteMusic = !muteMusic;
+								musicSettingsText = nullptr;
+								soundMixer->playSound(this, "button");
+								break;
+							case 1:
+								soundMixer->playSound(this, "button");
+								muteSound = !muteSound;
+								soundSettingsText = nullptr;
+
+								//controls
+								break;
+							case 2:
+								cout<<"difficulty";
+								soundMixer->playSound(this, "button");
+								difficulty=!difficulty;
+								difficultySettingsText = nullptr;
+
+								break;
+
+							case 3:
+								state = GameState::START;
+								settings_position_index = 0;
+								soundMixer->playSound(this, "button");
+
+								break;
+							}
+
+
+							continue;
+						}
 				}
 
 				if(event.key.keysym.sym == SDLK_UP) {
@@ -189,10 +245,19 @@ void GameWindow::gameLoop() {
 							pause_position_index = (pause_position_index - 1) % 2;
 						}
 					}
+
+					if(state == GameState::SETTINGS) {
+						if(settings_position_index == 0) {
+							settings_position_index = 3;
+						} else {
+							settings_position_index = (settings_position_index - 1) % 4;
+						}
+					}
 				}
 				if(event.key.keysym.sym == SDLK_s) {
 					if(state == GameState::CONTROLS) {
 						state = GameState::START;
+						soundMixer->playSound(this, "button");
 					}
 				}
 
@@ -201,6 +266,7 @@ void GameWindow::gameLoop() {
 					if(state == GameState::IN_GAME) {
 						pause_position_index = 0;
 						state = GameState::PAUSE;
+						soundMixer->playSound(this, "button");
 					}
 				}
 
@@ -209,6 +275,7 @@ void GameWindow::gameLoop() {
 				if(event.key.keysym.sym == SDLK_SPACE) {
 					if(state == GameState::END) {
 						restart(graphics);
+						soundMixer->playSound(this, "button");
 					}
 				}
 
@@ -232,9 +299,14 @@ void GameWindow::gameLoop() {
 					delete(obstacleManager);
 					delete(player);
 					delete(pauseContinueText);
+					delete(musicSettingsText);
+					delete(startScreenSettingsText);
+					delete(soundSettingsText);
+					delete(difficultySettingsText);
 					delete(this->startSettingsText);
 					delete(pauseNewGameText);
 					delete(startGameText);
+					delete(soundMixer);
 					delete(endGameText);
 					delete(endNewGameText);
 					delete(endScoreGameText);
@@ -284,6 +356,13 @@ int GameWindow::getScore() const {
 	return gamescore;
 }
 
+bool GameWindow::getDifficulty() const{
+	return difficulty;
+}
+bool GameWindow::isSoundMuted() const {
+	return this->muteSound;
+}
+
 void GameWindow::restart(Graphics& graphics) {
 
 
@@ -302,6 +381,10 @@ void GameWindow::restart(Graphics& graphics) {
 	pauseNewGameText = nullptr;
 	endGameText = nullptr;
 	endNewGameText = nullptr;
+	musicSettingsText = nullptr;
+	startScreenSettingsText = nullptr;
+	soundSettingsText = nullptr;
+	difficultySettingsText = nullptr;
 	endScoreGameText = nullptr;
 	startSettingsText = nullptr;
 	controlsGameText = nullptr;
@@ -339,7 +422,7 @@ void GameWindow::addObstacle(Obstacle* obstacle) {
 }
 
 SoundMixer& GameWindow::getSoundMixer() {
-	return soundMixer;
+	return *soundMixer;
 }
 
 void GameWindow::gameUpdate(const float &elapsedTime) {
@@ -351,6 +434,10 @@ void GameWindow::gameUpdate(const float &elapsedTime) {
 
 	switch(state) {
 	case GameState::PAUSE:
+	{
+		break;
+	}
+	case GameState::SETTINGS:
 	{
 		break;
 	}
@@ -408,7 +495,7 @@ void GameWindow::gameUpdate(const float &elapsedTime) {
 					}
 					topBlocks.erase(topBlocks.begin() + i);
 
-					if(state == GameState::IN_GAME) {
+					if(state == GameState::IN_GAME && player->hasSwung()) {
 						gamescore++;
 					}
 					Entity *block = new Entity(
@@ -442,19 +529,21 @@ void GameWindow::gameUpdate(const float &elapsedTime) {
 
 				if(entity->ObstacleID() == 0){
 					//if we want to make the game much much harder
-					/*
+
 					if(heightIndex == 28){
 						heightIndex = 0;
 					}
-					if(player->getY() < entity->getY()){
-						entity->setY(entity->getY() - 1);
+					if(difficulty == false){
+						if(player->getY() < entity->getY()){
+							entity->setY(entity->getY() - 1);
 
+						}
+						else if(player->getY() > entity->getY()){
+							entity->setY(entity->getY() + 1);
+						}
 					}
-					else if(player->getY() > entity->getY()){
-						entity->setY(entity->getY() + 1);
-					}*/
 
-					entity->setY(entity->getY() + (this->height[heightIndex]-5)/2);
+					entity->setY(entity->getY() + (this->height[heightIndex]-5)/4);
 				}
 				entity->gameUpdate(elapsedTime);
 			}
@@ -494,13 +583,18 @@ void GameWindow::gameDraw(Graphics &graphics) {
 
 		for (Obstacle *obs : obstacles) {
 			if(!obs->isDestroyed()) {
+<<<<<<< HEAD
 				if(state != GameState::START && state != GameState::CONTROLS) {
 					obs->gameDraw(graphics);
+=======
+				if(state != GameState::START && state != GameState::CONTROLS && state != GameState::SETTINGS) {
+			obs->gameDraw(graphics);
+>>>>>>> master
 				}
 			}
 		}
 
-		if(state != GameState::START && state != GameState::CONTROLS) {
+		if(state != GameState::START && state != GameState::CONTROLS && state != GameState::SETTINGS) {
 			player->gameDraw(graphics);
 		}
 
@@ -544,6 +638,49 @@ void GameWindow::gameDraw(Graphics &graphics) {
 		startGameText->draw(320, 220);
 		controlsGameText->draw(335, 280);
 		startSettingsText->draw(335, 340);
+		break;
+	}
+	case SETTINGS:
+	{
+		if(this->musicSettingsText == nullptr) {
+			SDL_Color color = {255,255,255};
+			musicSettingsText = new GraphicsText(graphics.getRenderer(), 40, "res/AGENCYB.TTF", (this->muteMusic ? "Unmute Music" : "Mute Music"), color);
+		}
+
+		if(this->soundSettingsText == nullptr) {
+			SDL_Color color = {255,255,255};
+			soundSettingsText = new GraphicsText(graphics.getRenderer(), 40, "res/AGENCYB.TTF", (this->muteSound ? "Unmute Sound" : "Mute Sound"), color);
+		}
+		if(this->difficultySettingsText == nullptr) {
+			SDL_Color color = {255,255,255};
+			difficultySettingsText = new GraphicsText(graphics.getRenderer(), 40, "res/AGENCYB.TTF", (this->difficulty ? "Difficulty: Easy" : "Difficulty: Hard"), color);
+		}
+
+
+		if(this->startScreenSettingsText == nullptr) {
+			SDL_Color color = {255,255,255};
+			startScreenSettingsText = new GraphicsText(graphics.getRenderer(), 40, "res/AGENCYB.TTF", "Start Screen", color);
+		}
+
+		SDL_Rect dot;
+
+
+		dot.w = 15;
+		dot.h = 15;
+		dot.x = 285;
+		dot.y = settings_menu_dot_position_y[settings_position_index];
+
+		SDL_SetRenderDrawColor(graphics.getRenderer(), 255, 255, 255, 255);
+
+		graphics.drawFilledRect(dot);
+
+		SDL_SetRenderDrawColor(graphics.getRenderer(), 0, 0, 0, 0);
+
+
+		musicSettingsText->draw(320, 130);
+		soundSettingsText->draw(320, 200);
+		difficultySettingsText->draw(320, 270);
+		startScreenSettingsText->draw(320, 340);
 		break;
 	}
 	case CONTROLS:

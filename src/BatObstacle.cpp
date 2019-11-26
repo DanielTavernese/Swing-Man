@@ -2,6 +2,7 @@
 #include "time.h"
 
 
+
 BatObstacle::BatObstacle(GameWindow* window) : Obstacle(window, 0, 0, NULL, true, 50) {
 	this->batTicks = 0;
 	this->flyingSprite = false;
@@ -18,7 +19,7 @@ void BatObstacle::generateObstacle() {
 
 	int y = 120 + (rand() % (GameWindow::GAME_HEIGHT / 4));
 
-	window->getSoundMixer().playSound("bat");
+	window->getSoundMixer().playSound(window, "bat");
 
 
 
@@ -31,10 +32,10 @@ void BatObstacle::generateObstacle() {
 
 void BatObstacle::handleCollision(Player* player) {
 	if(!player->isFalling()) {
-		window->getSoundMixer().playSound("top");
 
 		if(player->isMortal()){
 
+			window->getSoundMixer().playSound(window, "top");
 			player->resetSwinging();
 			player->setYVelocity(0);
 			player->setFalling(true);
@@ -63,6 +64,5 @@ void BatObstacle::draw(Graphics& graphics) {
 int BatObstacle::ObstacleID(){
 	return 0;
 }
-
 
 
