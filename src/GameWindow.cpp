@@ -37,6 +37,8 @@ int pause_position_index = 0;
 int settings_menu_dot_position_y[] = {150, 220, 290, 360};
 int settings_position_index = 0;
 
+int space_counter = 0;
+
 int main(int argv, char **args) {
 	GameWindow game;
 	return 0;
@@ -285,20 +287,27 @@ void GameWindow::gameLoop() {
 
 
 
-				if(event.key.keysym.sym == SDLK_SPACE) {
-					if(state == GameState::END) {
-						restart(graphics);
-						soundMixer->playSound(this, "button");
-					}
-				}
-
-
 
 			} else if (event.type == SDL_KEYUP) {
 
 				if (event.key.keysym.sym == SDLK_SPACE) {
 					if(!player->isFalling()) {
 					player->resetSwinging();
+					}
+				}
+
+
+				if(event.key.keysym.sym == SDLK_SPACE) {
+					cout << "here" << endl;
+					if(state == GameState::END) {
+						if(space_counter == 0) {
+												space_counter = 1;
+											} else {
+
+						restart(graphics);
+						soundMixer->playSound(this, "button");
+						space_counter = 0;
+					}
 					}
 				}
 
