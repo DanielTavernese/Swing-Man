@@ -144,12 +144,15 @@ void GameWindow::gameLoop() {
 				if(event.key.keysym.sym == SDLK_DOWN) {
 					if(state == GameState::START) {
 						menu_position_index = (menu_position_index + 1) % 3;
+						soundMixer->playSound(this, "button");
 					}
 					if(state == GameState::PAUSE) {
 						pause_position_index = (pause_position_index + 1) % 2;
+						soundMixer->playSound(this, "button");
 					}
 					if(state == GameState::SETTINGS) {
 						settings_position_index = (settings_position_index + 1) % 4;
+						soundMixer->playSound(this, "button");
 					}
 				}
 
@@ -238,6 +241,7 @@ void GameWindow::gameLoop() {
 						} else {
 							menu_position_index = (menu_position_index - 1) % 3;
 						}
+						soundMixer->playSound(this, "button");
 					}
 
 					if(state == GameState::PAUSE) {
@@ -246,6 +250,7 @@ void GameWindow::gameLoop() {
 						} else {
 							pause_position_index = (pause_position_index - 1) % 2;
 						}
+						soundMixer->playSound(this, "button");
 					}
 
 					if(state == GameState::SETTINGS) {
@@ -254,6 +259,7 @@ void GameWindow::gameLoop() {
 						} else {
 							settings_position_index = (settings_position_index - 1) % 4;
 						}
+						soundMixer->playSound(this, "button");
 					}
 				}
 
