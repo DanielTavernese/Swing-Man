@@ -300,13 +300,22 @@ void GameWindow::gameLoop() {
 				if(event.key.keysym.sym == SDLK_SPACE) {
 					cout << "here" << endl;
 					if(state == GameState::END) {
-						if(space_counter == 0) {
-												space_counter = 1;
-											} else {
+						if(!player->hasTopBlockHit()) {
+							restart(graphics);
+							soundMixer->playSound(this, "button");
+							space_counter = 0;
+							player->setTopBlockHit(false);
+						} else {
+							if(space_counter == 0) {
+								space_counter = 1;
+							} else {
 
-						restart(graphics);
-						soundMixer->playSound(this, "button");
-						space_counter = 0;
+								restart(graphics);
+								soundMixer->playSound(this, "button");
+								space_counter = 0;
+								player->setTopBlockHit(false);
+						}
+
 					}
 					}
 				}
@@ -367,6 +376,10 @@ void GameWindow::gameLoop() {
 	}
 
 
+}
+
+void GameWindow::setTopBlockHit(const bool& topFlagHit) {
+	this->topFlagHit = topFlagHit;
 }
 
 

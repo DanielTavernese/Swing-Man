@@ -110,6 +110,8 @@ public:
 
 	bool isSoundMuted() const;
 
+	void setTopBlockHit(const bool& topFlagHit);
+
 
 private:
 
@@ -139,6 +141,8 @@ private:
 	bool muteSound;
 
 	bool difficulty;
+
+	bool topFlagHit;
 
 	GameState state;
 
