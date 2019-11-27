@@ -378,10 +378,6 @@ void GameWindow::gameLoop() {
 
 }
 
-void GameWindow::setTopBlockHit(const bool& topFlagHit) {
-	this->topFlagHit = topFlagHit;
-}
-
 
 GameState GameWindow::getGameState() const {
 	return state;
