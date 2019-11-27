@@ -151,6 +151,8 @@ void Player::gameUpdate(const float& elapstedTime) {
 		entityRect.y = obstacle->getY();
 		entityRect.w = obstacle->getWidth();
 		entityRect.h = obstacle->getHeight();
+		topBlockHit = true;
+
 		SDL_bool intersects = SDL_IntersectRect(&playerRect, &entityRect, &result);
 		if(intersects == SDL_TRUE) {
 			obstacle->handleCollision(this);
