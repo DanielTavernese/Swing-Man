@@ -39,6 +39,9 @@ Contributors names and contact info
 Daniyal Maniar  
 [@DanMan259](https://github.com/DanMan259)
 
+Husnain Haider
+[@mhh16](https://github.com/mhh16)
+
 ## Version History
 
 * 0.1
