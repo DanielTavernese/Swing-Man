@@ -42,6 +42,9 @@ Daniyal Maniar
 Husnain Haider
 [@mhh16](https://github.com/mhh16)
 
+Walter Karabin
+[@WalterKarabin](https://github.com/walterkarabin)
+
 ## Version History
 
 * 0.1
