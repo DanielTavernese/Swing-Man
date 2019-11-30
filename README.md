@@ -45,6 +45,15 @@ Husnain Haider
 Walter Karabin
 [@WalterKarabin](https://github.com/walterkarabin)
 
+Nick Jones
+(https://github.com/nickjones18)
+
+Daniel Tavernese
+(https://github.com/DanielTavernese)
+
+Howie Zuo
+[@howieeeeeeeeeeeeee](https://github.com/HanyuZuo)
+
 ## Version History
 
 * 0.1
